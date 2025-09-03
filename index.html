@@ -740,9 +740,10 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK with Messaging -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
     <script>
         // Your Firebase config
         const firebaseConfig = {
@@ -758,6 +759,69 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const messaging = firebase.messaging();
+        
+        // Request notification permission and get token
+        async function requestNotificationPermission() {
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    console.log('Notification permission granted.');
+                    
+                    // Get registration token
+                    const token = await messaging.getToken({ 
+                        vapidKey: 'BP2T9VQ7hL3lVjVjxY0nX4cR6mYqQxq9uJ4dYq5vXbZxJ3JQd4wvF6eR4dYq5vXbZxJ3JQd4wvF6eR4dYq5vXbZ' 
+                    });
+                    
+                    if (token) {
+                        console.log('FCM Token:', token);
+                        
+                        // Save token to Firestore with user's license
+                        if (sessionStorage.getItem('forex_license')) {
+                            const licenseKey = sessionStorage.getItem('forex_license');
+                            
+                            // Save token to Firestore
+                            const licenseQuery = await db.collection('licenseKeys')
+                                .where('key', '==', licenseKey)
+                                .get();
+                                
+                            if (!licenseQuery.empty) {
+                                const docId = licenseQuery.docs[0].id;
+                                await db.collection('licenseKeys').doc(docId).update({
+                                    fcmToken: token,
+                                    notificationEnabled: true
+                                });
+                            }
+                        }
+                    } else {
+                        console.log('No registration token available.');
+                    }
+                } else {
+                    console.log('Notification permission denied.');
+                }
+            } catch (err) {
+                console.log('An error occurred while retrieving token:', err);
+            }
+        }
+        
+        // Handle foreground messages
+        messaging.onMessage((payload) => {
+            console.log('Message received in foreground:', payload);
+            
+            // Create a notification
+            const notification = new Notification(payload.notification.title || 'New Forex Signal!', {
+                body: payload.notification.body || payload.data.body,
+                icon: 'https://i.imgur.com/ROu3.png',
+                badge: 'https://i.imgur.com/ROu3.png'
+            });
+            
+            // Add click handler
+            notification.onclick = function() {
+                window.focus();
+                window.location.href = payload.data.click_action || 'index.html';
+                notification.close();
+            };
+        });
         
         // Create professional market candlestick animation
         document.addEventListener('DOMContentLoaded', function() {
@@ -778,12 +842,18 @@
                         showSignalsPage();
                         loadSignals();
                         startCountdown(expirationTime);
+                        
+                        // Request notification permission
+                        setTimeout(requestNotificationPermission, 1000);
                     } else {
                         showExpiredPage();
                     }
                 } else {
                     showSignalsPage();
                     loadSignals();
+                    
+                    // Request notification permission
+                    setTimeout(requestNotificationPermission, 1000);
                 }
             }
         });
@@ -953,6 +1023,9 @@
                         if (expiresAtTime) {
                             startCountdown(expiresAtTime);
                         }
+                        
+                        // Request notification permission
+                        setTimeout(requestNotificationPermission, 1000);
                     } else {
                         showMessage('Invalid or inactive license key', 'error');
                     }
