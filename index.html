@@ -7,394 +7,706 @@
     <style>
         * { 
             box-sizing: border-box; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             transition: all 0.3s ease;
         }
         body { 
-            background: #0f0f1b; 
+            background: #0a0a15; 
             color: #e0e0e0; 
             margin: 0; 
             padding: 20px; 
             min-height: 100vh; 
             overflow-x: hidden;
             position: relative;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(41, 98, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 107, 107, 0.05) 0%, transparent 20%);
         }
-        
-        .notification-status {
+        /* Animated background elements */
+        .bg-elements {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
         }
-        
-        .notification-status.enabled {
-            background: rgba(46, 204, 113, 0.2);
-            color: #2ecc71;
-            border: 1px solid #27ae60;
-        }
-        
-        .notification-status.disabled {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-            border: 1px solid #c0392b;
-        }
-        
-        .notification-status-icon {
-            width: 12px;
-            height: 12px;
+        .bg-circle {
+            position: absolute;
             border-radius: 50%;
-            background: #2ecc71;
+            opacity: 0.1;
         }
-        
-        .notification-status.disabled .notification-status-icon {
-            background: #e74c3c;
+        .bg-circle.blue {
+            background: #2962FF;
+            animation: float 25s infinite ease-in-out;
         }
-        
-        /* Your existing styles remain the same */
-        /* ... keep all your existing CSS ... */
+        .bg-circle.red {
+            background: #FF6B6B;
+            animation: float 30s infinite ease-in-out reverse;
+        }
+        .bg-circle.gold {
+            background: #FFD700;
+            animation: float 35s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(5%, 10%); }
+            50% { transform: translate(10%, 5%); }
+            75% { transform: translate(5%, -10%); }
+        }
         .container { 
             max-width: 500px; 
-            margin: 50px auto; 
-            background: #151729; 
-            padding: 30px; 
-            border-radius: 15px; 
-            box-shadow: 0 0 30px rgba(78, 205, 196, 0.2);
-            border: 1px solid rgba(78, 205, 196, 0.1);
+            margin: 40px auto; 
+            background: #0f1120; 
+            padding: 35px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(41, 98, 255, 0.2);
             position: relative;
             overflow: hidden;
             z-index: 1;
         }
-        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(41, 98, 255, 0.08) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #2962FF, #FFD700, #FF6B6B);
+            z-index: 1;
+        }
         h1 { 
             text-align: center; 
-            color: #4ecdc4; 
-            margin-bottom: 30px; 
-            font-weight: 700;
-            text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+            color: #FFD700; 
+            margin-bottom: 25px; 
+            font-weight: 800;
+            font-size: 2.2rem;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
             position: relative;
+            letter-spacing: 1px;
         }
-        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #2962FF, #FFD700);
+            border-radius: 3px;
+        }
         .premium-badge {
             display: inline-block;
-            background: linear-gradient(45deg, #4ecdc4, #1a936f);
+            background: linear-gradient(45deg, #FFD700, #FFA500);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
-            font-size: 0.8em;
+            font-size: 0.9rem;
+            padding: 3px 12px;
+            border-radius: 20px;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-left: 8px;
         }
-        
         .form-group { 
-            margin-bottom: 25px; 
+            margin-bottom: 28px; 
             position: relative;
         }
-        
         label { 
             display: block; 
-            margin-bottom: 10px; 
-            font-weight: bold; 
-            color: #4ecdc4;
-            font-size: 14px;
+            margin-bottom: 12px; 
+            font-weight: 600; 
+            color: #2962FF;
+            font-size: 15px;
+            letter-spacing: 0.5px;
         }
-        
         input { 
             width: 100%; 
-            padding: 14px; 
-            background: #121423; 
-            border: 1px solid #2d314d;
-            border-radius: 8px; 
+            padding: 16px; 
+            background: #131628; 
+            border: 2px solid #1e233d;
+            border-radius: 12px; 
             color: white; 
-            font-size: 16px;
+            font-size: 17px;
             transition: all 0.3s;
+            letter-spacing: 1px;
+            font-weight: 500;
         }
-        
+        input:focus {
+            outline: none;
+            border-color: #2962FF;
+            box-shadow: 0 0 0 4px rgba(41, 98, 255, 0.25);
+        }
+        input::placeholder {
+            color: #5a628a;
+            font-weight: 500;
+        }
         button { 
-            background: linear-gradient(45deg, #4ecdc4, #1a936f); 
-            color: #0f0f1b; 
+            background: linear-gradient(45deg, #2962FF, #1a47b8); 
+            color: white; 
             border: none; 
-            padding: 14px 20px; 
-            border-radius: 8px; 
+            padding: 16px 25px; 
+            border-radius: 12px; 
             cursor: pointer; 
-            font-size: 16px; 
-            font-weight: bold; 
+            font-size: 17px; 
+            font-weight: 700; 
             width: 100%; 
-            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+            box-shadow: 0 6px 20px rgba(41, 98, 255, 0.4);
             position: relative;
             overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             font-weight: 600;
+            z-index: 1;
         }
-        
+        button:hover { 
+            transform: translateY(-3px);
+            box-shadow: 0 9px 25px rgba(41, 98, 255, 0.5);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s;
+        }
+        button:hover::after {
+            left: 100%;
+        }
+        .glow-effect {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(ellipse at center, rgba(41, 98, 255, 0.15) 0%, transparent 70%);
+            filter: blur(25px);
+            z-index: -1;
+            pointer-events: none;
+            animation: pulseGlow 4s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { opacity: 0.2; }
+            100% { opacity: 0.4; }
+        }
         .error { 
-            color: #ff6b6b; 
+            color: #FF6B6B; 
             text-align: center; 
-            margin-top: 15px; 
-            font-weight: 500;
-            min-height: 20px;
+            margin-top: 18px; 
+            font-weight: 600;
+            min-height: 24px;
+            font-size: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255, 107, 107, 0.1);
         }
-        
         .success { 
             color: #4ecdc4; 
             text-align: center; 
-            margin-top: 15px; 
-            font-weight: 500;
+            margin-top: 18px; 
+            font-weight: 600;
+            background: rgba(78, 205, 196, 0.1);
+            padding: 10px;
+            border-radius: 8px;
         }
-        
         .hidden { 
             display: none; 
         }
-        
         .logo { 
-            color: #4ecdc4; 
-            font-size: 2.7rem; 
+            color: #FFD700; 
+            font-size: 2.8rem; 
             text-align: center; 
-            margin: 20px 0;
+            margin: 25px 0 30px;
             font-weight: 800;
-            text-shadow: 0 0 15px rgba(78, 205, 196, 0.4);
+            text-shadow: 0 0 18px rgba(255, 215, 0, 0.4);
             position: relative;
+            letter-spacing: 1px;
         }
-        
+        .logo span {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #2962FF, #FFD700, #FF6B6B);
+            border-radius: 2px;
+        }
         .signals-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-            gap: 25px; 
-            margin-top: 30px; 
+            grid-template-columns: 1fr; 
+            gap: 22px; 
+            margin-top: 25px; 
         }
-        
         .signal-card { 
-            background: #151729; 
-            border-radius: 12px; 
-            padding: 22px; 
-            border-left: 4px solid #4ecdc4;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            background: #12152a; 
+            border-radius: 16px; 
+            padding: 24px; 
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
             position: relative;
             overflow: hidden;
-            transform: translateY(20px);
+            transform: translateY(25px);
             opacity: 0;
-            animation: fadeInUp 0.5s forwards;
-            border: 1px solid rgba(78, 205, 196, 0.1);
+            animation: fadeInUp 0.6s forwards;
+            border: 1px solid rgba(41, 98, 255, 0.2);
+            transition: all 0.3s;
         }
-        
+        .signal-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+            border-color: rgba(41, 98, 255, 0.4);
+        }
+        .signal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, #2962FF, #FFD700);
+        }
         @keyframes fadeInUp {
             to {
                 transform: translateY(0);
                 opacity: 1;
             }
         }
-        
         .signal-header { 
             display: flex; 
             justify-content: space-between; 
-            margin-bottom: 18px;
+            margin-bottom: 20px;
             position: relative;
         }
-        
         .pair { 
-            font-size: 1.5rem; 
+            font-size: 1.7rem; 
             font-weight: bold; 
-            color: #4ecdc4;
-            text-shadow: 0 0 8px rgba(78, 205, 196, 0.3);
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            letter-spacing: 0.5px;
         }
-        
         .timeframe { 
-            background: #121423; 
-            padding: 5px 12px; 
-            border-radius: 20px; 
-            font-size: 14px;
-            border: 1px solid rgba(78, 205, 196, 0.2);
+            background: rgba(19, 22, 40, 0.7); 
+            padding: 6px 14px; 
+            border-radius: 25px; 
+            font-size: 15px;
+            border: 1px solid rgba(41, 98, 255, 0.3);
+            color: #2962FF;
+            font-weight: 600;
         }
-        
         .signal-type.buy { 
-            color: #4ecdc4; 
+            color: #FFD700; 
             font-weight: 700;
-            font-size: 1.2rem;
-            text-shadow: 0 0 10px rgba(78, 205, 196, 0.3);
+            font-size: 1.3rem;
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.3);
+            letter-spacing: 1px;
         }
-        
         .signal-type.sell { 
-            color: #ff6b6b; 
+            color: #FF6B6B; 
             font-weight: 700;
-            font-size: 1.2rem;
-            text-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+            font-size: 1.3rem;
+            text-shadow: 0 0 12px rgba(255, 107, 107, 0.3);
+            letter-spacing: 1px;
         }
-        
         .entry, .tp, .sl { 
-            margin: 14px 0;
-            padding: 10px;
-            border-radius: 6px;
-            background: #121423;
-            border-left: 3px solid;
+            margin: 16px 0;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: rgba(19, 22, 40, 0.6);
+            border-left: 4px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
-        .entry { border-left-color: #4ecdc4; }
-        .tp { border-left-color: #2ecc71; }
-        .sl { border-left-color: #e74c3c; }
-        
+        .entry { 
+            border-left-color: #2962FF;
+            box-shadow: 0 3px 10px rgba(41, 98, 255, 0.2);
+        }
+        .tp { 
+            border-left-color: #4CAF50;
+            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.2);
+        }
+        .sl { 
+            border-left-color: #FF6B6B;
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.2);
+        }
+        .value {
+            font-weight: 700;
+            color: white;
+            font-size: 1.1rem;
+        }
         .btn-logout { 
-            background: linear-gradient(45deg, #ff6b6b, #c0392b); 
+            background: linear-gradient(45deg, #FF6B6B, #C44536); 
             color: white; 
             border: none; 
-            padding: 12px 15px; 
-            border-radius: 6px; 
+            padding: 13px 18px; 
+            border-radius: 8px; 
             cursor: pointer; 
             float: right;
-            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 5px 12px rgba(255, 107, 107, 0.3);
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
-        
+        .btn-logout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(255, 107, 107, 0.4);
+        }
         .footer { 
             text-align: center; 
-            margin-top: 40px; 
-            color: #888; 
-            font-size: 0.9rem;
-            padding-top: 20px;
-            border-top: 1px solid #2d314d;
-        }
-        
-        .expiration-warning { 
-            background: linear-gradient(45deg, #ff6b6b, #c0392b); 
-            color: white; 
-            padding: 12px; 
-            border-radius: 8px; 
-            text-align: center; 
-            margin-bottom: 25px;
+            margin-top: 35px; 
+            color: #7a82a6; 
+            font-size: 0.95rem;
+            padding-top: 22px;
+            border-top: 1px solid rgba(30, 35, 61, 0.5);
             font-weight: 500;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.2);
+        }
+        .expiration-warning { 
+            background: linear-gradient(45deg, #FF6B6B, #C44536); 
+            color: white; 
+            padding: 14px; 
+            border-radius: 10px; 
+            text-align: center; 
+            margin-bottom: 28px;
+            font-weight: 600;
+            box-shadow: 0 5px 18px rgba(255, 107, 107, 0.3);
             position: relative;
             overflow: hidden;
+            border: 1px solid rgba(255, 107, 107, 0.3);
         }
-        
+        .expiration-warning::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700, #FF6B6B);
+        }
+        .expiration-countdown {
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-top: 10px;
+            text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+        }
+        .countdown-value {
+            display: inline-block;
+            min-width: 35px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 3px 6px;
+            border-radius: 6px;
+            margin: 0 3px;
+            font-weight: 700;
+        }
         .loading { 
             text-align: center; 
-            padding: 25px; 
-            color: #4ecdc4;
+            padding: 30px; 
+            color: #2962FF;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
-        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-left: 12px;
+            border: 3px solid rgba(41, 98, 255, 0.3);
+            border-top-color: #2962FF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
         .refresh-btn {
-            background: linear-gradient(45deg, #4ecdc4, #1a936f);
-            color: #0f0f1b;
+            background: linear-gradient(45deg, #2962FF, #1a47b8);
+            color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
+            padding: 12px 20px;
+            border-radius: 10px;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 20px;
             width: 100%;
             font-weight: 600;
-            box-shadow: 0 4px 10px rgba(78, 205, 196, 0.3);
+            box-shadow: 0 5px 15px rgba(41, 98, 255, 0.4);
+            font-size: 17px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
-        
+        .refresh-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(41, 98, 255, 0.5);
+        }
         /* Pricing section */
         .pricing-section {
-            background: #121423;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(78, 205, 196, 0.1);
+            background: #111428;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 28px;
+            border: 1px solid rgba(41, 98, 255, 0.2);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
         }
-        
         .pricing-title {
             text-align: center;
-            color: #4ecdc4;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
+            color: #FFD700;
+            margin-bottom: 18px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
-        
         .pricing-options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
+            gap: 18px;
         }
-        
         .price-card {
-            background: #0f111d;
-            border-radius: 8px;
-            padding: 15px;
+            background: #151932;
+            border-radius: 12px;
+            padding: 18px 15px;
             text-align: center;
-            border: 1px solid rgba(78, 205, 196, 0.1);
-            transition: all 0.3s;
+            border: 2px solid transparent;
+            transition: all 0.4s;
             position: relative;
             overflow: hidden;
+            z-index: 1;
         }
-        
+        .price-card.popular {
+            border-color: #FFD700;
+            transform: scale(1.05);
+            z-index: 2;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+        }
+        .price-card.popular::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #FFD700;
+        }
+        .price-card:hover {
+            transform: translateY(-5px);
+            border-color: #2962FF;
+            box-shadow: 0 8px 25px rgba(41, 98, 255, 0.3);
+        }
         .duration {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #4ecdc4;
-            margin: 8px 0;
-        }
-        
-        .price {
-            font-size: 1.6rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            color: #4ecdc4;
-            margin: 8px 0;
+            color: #FFD700;
+            margin: 10px 0 8px;
+            letter-spacing: 0.5px;
         }
-        
+        .price {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 10px 0;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
         .original-price {
             text-decoration: line-through;
-            color: #aaa;
-            font-size: 1rem;
+            color: #7a82a6;
+            font-size: 1.1rem;
             display: block;
-            margin-top: 5px;
+            margin-top: 6px;
         }
-        
         .promotion-tag {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #ff6b6b;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(45deg, #FF6B6B, #FF5252);
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            box-shadow: 0 3px 8px rgba(255, 82, 82, 0.3);
         }
-        
         .whatsapp-btn {
             background: linear-gradient(45deg, #25D366, #128C7E);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 6px;
+            padding: 14px;
+            border-radius: 10px;
             width: 100%;
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-top: 15px;
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+            gap: 10px;
+            margin-top: 18px;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+        .whatsapp-icon {
+            font-size: 1.3rem;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        /* Real-time market data display */
+        .market-data {
+            display: flex;
+            justify-content: space-between;
+            background: #111428;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 25px;
+            font-size: 1rem;
+            border: 1px solid rgba(41, 98, 255, 0.2);
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+        }
+        .market-pair {
+            display: flex;
+            flex-direction: column;
+        }
+        .market-pair-name {
+            font-weight: 600;
+            color: #2962FF;
+            font-size: 1.05rem;
+            letter-spacing: 0.5px;
+        }
+        .market-price {
+            font-size: 1.35rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+        .market-change {
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+        .market-change.positive {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+        .market-change.negative {
+            background: rgba(255, 107, 107, 0.2);
+            color: #FF6B6B;
+        }
+        /* License expired section */
+        .license-expired {
+            background: #13162a;
+            border-radius: 14px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        .license-expired h3 {
+            color: #FF6B6B;
+            margin-bottom: 18px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .btn-secondary {
+            background: linear-gradient(45deg, #1e233d, #151932);
+            color: #2962FF;
+            border: 1px solid #2962FF;
+        }
+        /* Notification badge for new signals */
+        .new-signal-badge {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: linear-gradient(45deg, #FF6B6B, #FF5252);
+            color: white;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            animation: pulseBadge 1.8s infinite;
+            box-shadow: 0 0 10px rgba(255, 82, 82, 0.4);
+        }
+        @keyframes pulseBadge {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.25); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
 <body>
-    <!-- Notification status indicator -->
-    <div class="notification-status disabled" id="notificationStatus">
-        <span class="notification-status-icon"></span>
-        Notifications: <span id="notificationStatusText">Disabled</span>
+    <!-- Background elements -->
+    <div class="bg-elements">
+        <div class="bg-circle blue" style="width: 300px; height: 300px; top: 10%; left: 5%;"></div>
+        <div class="bg-circle red" style="width: 200px; height: 200px; top: 60%; right: 8%;"></div>
+        <div class="bg-circle gold" style="width: 250px; height: 250px; bottom: 15%; left: 10%;"></div>
+        <div class="bg-circle blue" style="width: 150px; height: 150px; top: 30%; right: 15%;"></div>
     </div>
     
     <!-- License Entry Page -->
     <div id="licensePage" class="container">
+        <div class="glow-effect" style="top: -50px; right: -50px;"></div>
+        <div class="glow-effect" style="bottom: -70px; left: -50px;"></div>
+        
         <h1>Premium <span class="premium-badge">Signals</span></h1>
         
         <!-- Pricing section -->
         <div class="pricing-section">
-            <div class="pricing-title">Special Promotion</div>
+            <div class="glow-effect" style="top: -40px; left: 20px; width: 150px; height: 150px;"></div>
+            <div class="pricing-title">Exclusive Offer</div>
             <div class="pricing-options">
                 <div class="price-card">
                     <div class="duration">3 Days</div>
                     <div class="price">$3 <span class="original-price">$5</span></div>
-                    <span class="promotion-tag">SALE</span>
+                    <span class="promotion-tag">HOT</span>
                 </div>
-                <div class="price-card">
+                <div class="price-card popular">
                     <div class="duration">7 Days</div>
                     <div class="price">$5 <span class="original-price">$12</span></div>
                     <span class="promotion-tag">BEST</span>
@@ -402,29 +714,47 @@
                 <div class="price-card">
                     <div class="duration">30 Days</div>
                     <div class="price">$15 <span class="original-price">$25</span></div>
-                    <span class="promotion-tag">SAVINGS</span>
+                    <span class="promotion-tag">PRO</span>
                 </div>
             </div>
-            <button class="whatsapp-btn" onclick="contactWhatsApp()" style="margin-top: 15px;">
+            <button class="whatsapp-btn" onclick="contactWhatsApp()">
                 <span class="whatsapp-icon">💬</span> Get License Key
             </button>
         </div>
         
         <div class="form-group">
             <label for="licenseKey">Enter License Key</label>
-            <input type="text" id="licenseKey" placeholder="XXXX-XXXX-XXXX-XXXX">
+            <input type="text" id="licenseKey" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" 
+                   oninput="formatLicenseKey(this)">
         </div>
-        <button onclick="validateLicense()">Access Premium Signals</button>
+        <button id="accessButton" onclick="validateLicense()">Access Premium Signals</button>
         <div id="message" class="error" style="display: none;"></div>
     </div>
-
+    
     <!-- Signals Page (hidden by default) -->
     <div id="signalsPage" class="hidden">
         <div class="container">
+            <div class="glow-effect" style="top: -50px; right: -50px;"></div>
+            <div class="glow-effect" style="bottom: -70px; left: -50px;"></div>
+            
             <header>
                 <h1 class="logo">Premium <span>Signals</span></h1>
                 <button class="btn-logout" onclick="logout()">Logout</button>
             </header>
+            
+            <!-- Real-time market data -->
+            <div class="market-data">
+                <div class="market-pair">
+                    <span class="market-pair-name">EUR/USD</span>
+                    <span class="market-price" id="eurusd-price">1.0850</span>
+                    <span class="market-change positive">+0.15%</span>
+                </div>
+                <div class="market-pair">
+                    <span class="market-pair-name">GBP/USD</span>
+                    <span class="market-price" id="gbpusd-price">1.2750</span>
+                    <span class="market-change negative">-0.08%</span>
+                </div>
+            </div>
             
             <div id="expirationWarning" class="expiration-warning" style="display: none;">
                 Your license expires in:
@@ -435,13 +765,14 @@
                     <span class="countdown-value" id="seconds">00</span>
                 </div>
             </div>
-
+            
             <div id="loading" class="loading">Loading premium signals...</div>
             <div class="signals-grid" id="signalsContainer"></div>
+            
             <button class="refresh-btn" onclick="loadSignals()">
-                Refresh Signals
+                <i class="fas fa-sync-alt"></i> Refresh Signals
             </button>
-
+            
             <div class="footer">
                 © 2023 Premium Forex Signals Platform. All rights reserved.
             </div>
@@ -451,6 +782,9 @@
     <!-- License Expired Page -->
     <div id="expiredPage" class="hidden">
         <div class="container">
+            <div class="glow-effect" style="top: -50px; right: -50px;"></div>
+            <div class="glow-effect" style="bottom: -70px; left: -50px;"></div>
+            
             <header>
                 <h1 class="logo">Premium <span>Signals</span></h1>
             </header>
@@ -460,15 +794,15 @@
                 <p>Your license has expired. Renew now to continue receiving premium signals.</p>
                 
                 <!-- Pricing section -->
-                <div class="pricing-section" style="margin: 20px 0; background: #101221;">
-                    <div class="pricing-title">Special Promotion</div>
+                <div class="pricing-section" style="margin: 22px 0; background: #111428;">
+                    <div class="pricing-title">Exclusive Offer</div>
                     <div class="pricing-options">
                         <div class="price-card">
                             <div class="duration">3 Days</div>
                             <div class="price">$3 <span class="original-price">$5</span></div>
-                            <span class="promotion-tag">SALE</span>
+                            <span class="promotion-tag">HOT</span>
                         </div>
-                        <div class="price-card">
+                        <div class="price-card popular">
                             <div class="duration">7 Days</div>
                             <div class="price">$5 <span class="original-price">$12</span></div>
                             <span class="promotion-tag">BEST</span>
@@ -476,27 +810,31 @@
                         <div class="price-card">
                             <div class="duration">30 Days</div>
                             <div class="price">$15 <span class="original-price">$25</span></div>
-                            <span class="promotion-tag">SAVINGS</span>
+                            <span class="promotion-tag">PRO</span>
                         </div>
                     </div>
-                    <button class="whatsapp-btn" onclick="contactWhatsApp()" style="margin-top: 15px;">
+                    <button class="whatsapp-btn" onclick="contactWhatsApp()">
                         <span class="whatsapp-icon">💬</span> Renew License
                     </button>
+                    
+                    <div class="btn-container">
+                        <button class="btn-logout" style="width: 48%;" onclick="logout()">Back to Login</button>
+                        <button class="refresh-btn" style="width: 48%;" onclick="window.location.reload()">Check Status</button>
+                    </div>
                 </div>
             </div>
-
+            
             <div class="footer">
                 © 2023 Premium Forex Signals Platform. All rights reserved.
             </div>
         </div>
     </div>
-
+    
     <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script>
-        // Check if we're running in a secure context (required for notifications)
-        console.log("Running in secure context:", window.isSecureContext);
-        
-        // Initialize Firebase directly with modular approach
+        // Your Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyA6A67d0YBJlhcT9GUGRVHMzGue1BM2rsA",
             authDomain: "forex-signals-platform.firebaseapp.com",
@@ -506,225 +844,114 @@
             appId: "1:655334374318:web:d107dbf37ab1e31e1c663f",
             measurementId: "G-P7RWPEPQ4V"
         };
-
-        // Initialize Firebase app
-        let firebaseApp;
-        let db;
-        let messaging;
         
-        try {
-            // Check if Firebase is already initialized
-            if (!firebase.apps.length) {
-                firebaseApp = firebase.initializeApp(firebaseConfig);
-                db = firebase.firestore();
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Format license key as user types (XXXX-XXXX-XXXX-XXXX)
+        function formatLicenseKey(input) {
+            let value = input.value.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+            let formatted = '';
+            
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0 && i < 16) {
+                    formatted += '-';
+                }
+                formatted += value[i];
                 
-                // Only initialize messaging if we're in a secure context
-                if (window.isSecureContext) {
-                    try {
-                        messaging = firebase.messaging();
-                        console.log("Firebase Messaging initialized");
-                    } catch (e) {
-                        console.error("Error initializing Firebase Messaging:", e);
+                // Limit to 19 characters (16 letters + 3 dashes)
+                if (formatted.length >= 19) {
+                    break;
+                }
+            }
+            
+            input.value = formatted;
+        }
+        
+        // Check if user has a valid session when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add glow effects to price cards
+            const priceCards = document.querySelectorAll('.price-card');
+            priceCards.forEach(card => {
+                const glow = document.createElement('div');
+                glow.className = 'glow-effect';
+                glow.style.width = '120px';
+                glow.style.height = '120px';
+                glow.style.top = '-30px';
+                glow.style.right = '-30px';
+                card.appendChild(glow);
+            });
+            
+            // Check if user has a valid session
+            if (sessionStorage.getItem('forex_license')) {
+                const licenseKey = sessionStorage.getItem('forex_license');
+                const expiresAt = sessionStorage.getItem('license_expires');
+                
+                // Verify license is still valid
+                if (expiresAt) {
+                    const now = new Date().getTime();
+                    const expirationTime = parseInt(expiresAt);
+                    
+                    if (now < expirationTime) {
+                        showSignalsPage();
+                        loadSignals();
+                        startCountdown(expirationTime);
+                    } else {
+                        showExpiredPage();
                     }
                 } else {
-                    console.log("Not in secure context - notifications may not work");
-                }
-            } else {
-                firebaseApp = firebase.app();
-                db = firebase.firestore();
-                if (window.isSecureContext) {
-                    try {
-                        messaging = firebase.messaging();
-                    } catch (e) {
-                        console.error("Error initializing Firebase Messaging:", e);
-                    }
-                }
-            }
-        } catch (e) {
-            console.error("Firebase initialization error:", e);
-        }
-
-        // Notification system
-        let notificationPermission = "default";
-        let lastCheckedTime = Date.now() - 3000; // Start from 3 seconds ago
-        let notificationStatusEl = document.getElementById('notificationStatus');
-        let notificationStatusTextEl = document.getElementById('notificationStatusText');
-
-        // Update notification status display
-        function updateNotificationStatus() {
-            if (notificationPermission === "granted") {
-                notificationStatusEl.className = "notification-status enabled";
-                notificationStatusTextEl.textContent = "Enabled";
-            } else if (notificationPermission === "denied") {
-                notificationStatusEl.className = "notification-status disabled";
-                notificationStatusTextEl.textContent = "Blocked";
-            } else {
-                notificationStatusEl.className = "notification-status disabled";
-                notificationStatusTextEl.textContent = "Not Requested";
-            }
-        }
-
-        // Request notification permission
-        async function requestNotificationPermission() {
-            if (!window.isSecureContext) {
-                console.log("Notifications require a secure context (HTTPS or localhost)");
-                return "unsupported";
-            }
-
-            if (!("Notification" in window)) {
-                console.log("This browser does not support notifications");
-                return "unsupported";
-            }
-
-            try {
-                const permission = await Notification.requestPermission();
-                notificationPermission = permission;
-                updateNotificationStatus();
-                
-                console.log("Notification permission:", permission);
-                
-                if (permission === "granted") {
-                    console.log("Notification permission granted");
-                    
-                    // Check if we have Firebase Messaging
-                    if (messaging) {
-                        try {
-                            const token = await messaging.getToken({
-                                vapidKey: "BP2T9VQ7hL3lVjVjxY0nX4cR6mYqQxq9uJ4dYq5vXbZxJ3JQd4wvF6eR4dYq5vXbZxJ3JQd4wvF6eR4dYq5vXbZ"
-                            });
-                            
-                            if (token) {
-                                console.log("FCM Token:", token);
-                                
-                                // Save token to Firestore
-                                if (sessionStorage.getItem('forex_license')) {
-                                    const licenseKey = sessionStorage.getItem('forex_license');
-                                    
-                                    // Update license with FCM token
-                                    const licenseQuery = await db.collection('licenseKeys')
-                                        .where('key', '==', licenseKey)
-                                        .get();
-                                        
-                                    if (!licenseQuery.empty) {
-                                        const docId = licenseQuery.docs[0].id;
-                                        await db.collection('licenseKeys').doc(docId).update({
-                                            fcmToken: token,
-                                            notificationEnabled: true
-                                        });
-                                        console.log("Token saved to Firestore");
-                                    }
-                                }
-                            } else {
-                                console.log("No registration token available");
-                            }
-                        } catch (err) {
-                            console.error("Error getting FCM token:", err);
-                        }
-                    } else {
-                        console.log("Firebase Messaging not available");
-                    }
-                }
-                
-                return permission;
-            } catch (err) {
-                console.error("Error requesting notification permission:", err);
-                return "error";
-            }
-        }
-
-        // Check for new signals
-        async function checkForNewSignals() {
-            if (!sessionStorage.getItem('forex_license')) return;
-            
-            try {
-                const snapshot = await db.collection('signals')
-                    .where('createdAt', '>', new Date(lastCheckedTime))
-                    .get();
-                
-                if (!snapshot.empty) {
-                    // Update last checked time
-                    lastCheckedTime = Date.now();
-                    
-                    // Process each new signal
-                    snapshot.forEach(doc => {
-                        const signal = doc.data();
-                        showNotification(signal);
-                    });
-                }
-            } catch (error) {
-                console.error("Error checking for new signals:", error);
-            }
-        }
-
-        // Show notification
-        function showNotification(signal) {
-            if (notificationPermission !== "granted") {
-                console.log("Cannot show notification - permission not granted");
-                return;
-            }
-            
-            try {
-                const notification = new Notification('New Forex Signal!', {
-                    body: `${signal.pair} ${signal.type.toUpperCase()} signal added!`,
-                    icon: 'https://i.imgur.com/ROu3.png',
-                    badge: 'https://i.imgur.com/ROu3.png'
-                });
-                
-                notification.onclick = function() {
-                    window.focus();
+                    showSignalsPage();
                     loadSignals();
-                    notification.close();
-                };
-                
-                console.log("Notification shown");
-            } catch (error) {
-                console.error("Error showing notification:", error);
-            }
-        }
-
-        // Setup notification system
-        function setupNotificationSystem() {
-            // Update status display
-            if ("Notification" in window) {
-                notificationPermission = Notification.permission;
-                updateNotificationStatus();
+                }
             }
             
-            // Request permission if not already granted
-            if (notificationPermission !== "granted") {
-                setTimeout(requestNotificationPermission, 1000);
+            // Make sure button is clickable by adding touch feedback
+            const accessButton = document.getElementById('accessButton');
+            if (accessButton) {
+                accessButton.addEventListener('touchstart', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 8px 20px rgba(41, 98, 255, 0.5)';
+                });
+                accessButton.addEventListener('touchend', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 6px 20px rgba(41, 98, 255, 0.4)';
+                });
             }
-            
-            // Check for new signals every 2 seconds
-            setInterval(checkForNewSignals, 2000);
-            
-            // Initial check
-            setTimeout(checkForNewSignals, 500);
-        }
-
-        // Your existing functions below remain mostly the same
-        // I've only included the critical parts for notifications
+        });
         
         function validateLicense() {
             const keyInput = document.getElementById('licenseKey').value.trim();
             const messageDiv = document.getElementById('message');
             
+            // Clear previous messages
+            messageDiv.style.display = 'none';
+            
             if (!keyInput) {
                 showMessage('Please enter a license key', 'error');
                 return;
             }
-
-            // Format key to match storage format
+            
+            // Format key to match storage format (XXXX-XXXX-XXXX-XXXX)
             const formattedKey = keyInput.replace(/[^A-Z0-9]/gi, '')
                 .replace(/(.{4})/g, '$1-')
                 .slice(0, 19)
                 .toUpperCase();
-
+                
+            // Show loading state on button
+            const accessButton = document.getElementById('accessButton');
+            const originalText = accessButton.innerHTML;
+            accessButton.innerHTML = '<div class="loading" style="color: white; margin: 0; padding: 0;">Validating...</div>';
+            accessButton.disabled = true;
+            
             // Direct Firestore check
             db.collection('licenseKeys')
                 .where('key', '==', formattedKey)
                 .get()
                 .then((querySnapshot) => {
+                    accessButton.innerHTML = originalText;
+                    accessButton.disabled = false;
+                    
                     if (!querySnapshot.empty) {
                         const keyData = querySnapshot.docs[0].data();
                         const expiresAt = keyData.expiresAt ? keyData.expiresAt.toDate() : null;
@@ -755,17 +982,58 @@
                         if (expiresAtTime) {
                             startCountdown(expiresAtTime);
                         }
-                        
-                        // Setup notification system
-                        setupNotificationSystem();
                     } else {
                         showMessage('Invalid or inactive license key', 'error');
                     }
                 })
                 .catch((error) => {
+                    accessButton.innerHTML = originalText;
+                    accessButton.disabled = false;
+                    
                     console.error("Validation error:", error);
                     showMessage('Connection error. Please try again.', 'error');
                 });
+        }
+        
+        function startCountdown(expiresAt) {
+            const countdownElement = document.getElementById('expirationWarning');
+            const daysElement = document.getElementById('days');
+            const hoursElement = document.getElementById('hours');
+            const minutesElement = document.getElementById('minutes');
+            const secondsElement = document.getElementById('seconds');
+            
+            countdownElement.style.display = 'block';
+            
+            const countdownTimer = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = expiresAt - now;
+                
+                // Check if expired
+                if (distance < 0) {
+                    clearInterval(countdownTimer);
+                    countdownElement.style.display = 'none';
+                    showExpiredPage();
+                    return;
+                }
+                
+                // Calculate time components
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                // Update countdown display
+                daysElement.textContent = days.toString().padStart(2, '0');
+                hoursElement.textContent = hours.toString().padStart(2, '0');
+                minutesElement.textContent = minutes.toString().padStart(2, '0');
+                secondsElement.textContent = seconds.toString().padStart(2, '0');
+            }, 1000);
+        }
+        
+        function contactWhatsApp() {
+            const message = "Hello, I'm interested in purchasing a Premium Signals license key.";
+            const whatsappUrl = `https://wa.me/263782637207?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
         }
         
         function showSignalsPage() {
@@ -776,7 +1044,7 @@
             // Show signals page
             document.getElementById('signalsPage').classList.remove('hidden');
         }
-
+        
         function showExpiredPage() {
             // Hide other pages
             document.getElementById('licensePage').classList.add('hidden');
@@ -785,18 +1053,18 @@
             // Show expired page
             document.getElementById('expiredPage').classList.remove('hidden');
         }
-
+        
         function loadSignals() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('signalsContainer').innerHTML = '';
             
-            // Get signals
+            // Get signals from Firestore
             db.collection('signals')
                 .get()
                 .then((querySnapshot) => {
                     document.getElementById('loading').style.display = 'none';
                     
-                    // Filter active signals
+                    // Filter active signals client-side
                     const activeSignals = [];
                     querySnapshot.forEach(doc => {
                         const signal = doc.data();
@@ -805,14 +1073,14 @@
                         }
                     });
                     
-                    // Sort by createdAt
+                    // Sort by createdAt (newest first)
                     activeSignals.sort((a, b) => {
                         return b.createdAt.seconds - a.createdAt.seconds;
                     });
                     
                     if (activeSignals.length === 0) {
                         document.getElementById('signalsContainer').innerHTML = 
-                            '<div class="signal-card" style="text-align: center;">No active signals available</div>';
+                            '<div class="signal-card" style="text-align: center; padding: 30px;">No active signals available at the moment</div>';
                         return;
                     }
                     
@@ -823,14 +1091,24 @@
                         const card = document.createElement('div');
                         card.className = 'signal-card';
                         
-                        // Add new signal badge if it's recent
+                        // Add glow effect
+                        const glow = document.createElement('div');
+                        glow.className = 'glow-effect';
+                        glow.style.width = '180px';
+                        glow.style.height = '180px';
+                        glow.style.top = '-40px';
+                        glow.style.right = '-30px';
+                        
+                        // Add new signal badge if it's recent (less than 24 hours)
                         let newSignalBadge = '';
                         const signalTime = signal.createdAt ? signal.createdAt.toDate() : new Date();
                         const hoursSinceCreated = (new Date() - signalTime) / (1000 * 60 * 60);
+                        
                         if (hoursSinceCreated < 24) {
-                            newSignalBadge = '<div style="position:absolute;top:15px;right:15px;background:#ff6b6b;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:bold;">NEW</div>';
+                            newSignalBadge = '<div class="new-signal-badge">NEW</div>';
                         }
                         
+                        // Create signal card HTML
                         card.innerHTML = `
                             ${newSignalBadge}
                             <div class="signal-header">
@@ -838,114 +1116,45 @@
                                 <span class="timeframe">${signal.timeframe}</span>
                             </div>
                             <div class="signal-type ${signal.type}">${signal.type.toUpperCase()}</div>
-                            <div class="entry"><strong>Entry:</strong> ${signal.entry}</div>
-                            <div class="tp"><strong>TP:</strong> ${signal.tp}</div>
-                            <div class="sl"><strong>SL:</strong> ${signal.sl}</div>
-                            ${signal.note ? `<div><strong>Note:</strong> ${signal.note}</div>` : ''}
+                            <div class="entry"><span>Entry:</span> <span class="value">${signal.entry}</span></div>
+                            <div class="tp"><span>TP:</span> <span class="value">${signal.tp}</span></div>
+                            <div class="sl"><span>SL:</span> <span class="value">${signal.sl}</span></div>
+                            ${signal.note ? `<div class="note" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.1);"><strong>Note:</strong> ${signal.note}</div>` : ''}
                         `;
                         
+                        card.appendChild(glow);
                         container.appendChild(card);
                     });
                 })
                 .catch(error => {
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('signalsContainer').innerHTML = 
-                        '<div class="signal-card" style="text-align: center; color: #ff6b6b;">Error loading signals</div>';
+                        '<div class="signal-card" style="text-align: center; color: #FF6B6B; padding: 25px;">Error loading signals. Please try again.</div>';
                     console.error("Error loading signals:", error);
                 });
         }
-
+        
         function logout() {
             sessionStorage.removeItem('forex_license');
             sessionStorage.removeItem('license_expires');
             document.getElementById('signalsPage').classList.add('hidden');
             document.getElementById('licensePage').classList.remove('hidden');
+            
+            // Clear license key field
+            document.getElementById('licenseKey').value = '';
         }
-
+        
         function showMessage(text, type) {
             const messageDiv = document.getElementById('message');
             messageDiv.textContent = text;
             messageDiv.className = type;
             messageDiv.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
         }
-        
-        // Initialize Firebase properly
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                // Load Firebase SDK dynamically
-                const firebaseAppScript = document.createElement('script');
-                firebaseAppScript.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js';
-                firebaseAppScript.async = true;
-                
-                firebaseAppScript.onload = () => {
-                    const firestoreScript = document.createElement('script');
-                    firestoreScript.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js';
-                    firestoreScript.async = true;
-                    
-                    firestoreScript.onload = () => {
-                        if (window.isSecureContext) {
-                            const messagingScript = document.createElement('script');
-                            messagingScript.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js';
-                            messagingScript.async = true;
-                            document.head.appendChild(messagingScript);
-                        }
-                        
-                        // Check if user has a valid session
-                        if (sessionStorage.getItem('forex_license')) {
-                            const licenseKey = sessionStorage.getItem('forex_license');
-                            const expiresAt = sessionStorage.getItem('license_expires');
-                            
-                            // Verify license is still valid
-                            if (expiresAt) {
-                                const now = new Date().getTime();
-                                const expirationTime = parseInt(expiresAt);
-                                
-                                if (now < expirationTime) {
-                                    showSignalsPage();
-                                    loadSignals();
-                                    
-                                    // Setup notification system
-                                    setupNotificationSystem();
-                                } else {
-                                    showExpiredPage();
-                                }
-                            } else {
-                                showSignalsPage();
-                                loadSignals();
-                                
-                                // Setup notification system
-                                setupNotificationSystem();
-                            }
-                        }
-                    };
-                    
-                    document.head.appendChild(firestoreScript);
-                };
-                
-                document.head.appendChild(firebaseAppScript);
-                
-                // Register service worker for notifications
-                if ('serviceWorker' in navigator && window.isSecureContext) {
-                    try {
-                        const registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
-                        console.log('Service Worker registered:', registration);
-                        
-                        // Check if there are pending notifications
-                        navigator.serviceWorker.ready.then(registration => {
-                            registration.getNotifications().then(notifications => {
-                                if (notifications.length > 0) {
-                                    console.log(`There are ${notifications.length} pending notifications.`);
-                                }
-                            });
-                        });
-                    } catch (error) {
-                        console.error('Service Worker registration failed:', error);
-                    }
-                }
-            } catch (error) {
-                console.error('Error initializing Firebase:', error);
-            }
-        });
     </script>
 </body>
 </html>
