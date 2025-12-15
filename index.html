@@ -4,12 +4,339 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>William Capital Signals</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* 3D Opening Animation Styles */
+        .opening-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #0a0a15 0%, #050510 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        
+        .opening-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .opening-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .opening-bg-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(26, 84, 156, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(26, 84, 156, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 1;
+        }
+        
+        .opening-pulse-dots {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+        
+        .opening-pulse-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: #1a549c;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+        
+        .opening-gear-container-3d {
+            width: 500px;
+            height: 300px;
+            position: relative;
+            perspective: 1000px;
+            z-index: 10;
+            margin-bottom: 40px;
+        }
+        
+        .opening-gear-scene {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(15deg) rotateY(10deg);
+        }
+        
+        .opening-gear {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(26, 84, 156, 0.4);
+        }
+        
+        .opening-gear-inner {
+            position: absolute;
+            background-color: #0a0a15;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .opening-gear-tooth {
+            position: absolute;
+            background-color: #1a549c;
+            border-radius: 3px;
+        }
+        
+        .opening-gear-1 {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(145deg, #0f1120, #1a3668);
+            top: 60px;
+            left: 80px;
+            animation: rotate-clockwise 8s linear infinite;
+            z-index: 3;
+        }
+        
+        .opening-gear-1 .opening-gear-inner {
+            width: 90px;
+            height: 90px;
+        }
+        
+        .opening-gear-2 {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(145deg, #1a3668, #0f1120);
+            top: 120px;
+            left: 240px;
+            animation: rotate-counterclockwise 6s linear infinite;
+            z-index: 4;
+        }
+        
+        .opening-gear-2 .opening-gear-inner {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .opening-gear-3 {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(145deg, #0f1120, #1a3668);
+            top: 160px;
+            left: 350px;
+            animation: rotate-clockwise 4s linear infinite;
+            z-index: 2;
+        }
+        
+        .opening-gear-3 .opening-gear-inner {
+            width: 45px;
+            height: 45px;
+        }
+        
+        .opening-gear-1 .opening-gear-tooth {
+            width: 20px;
+            height: 40px;
+            top: -20px;
+        }
+        
+        .opening-gear-2 .opening-gear-tooth {
+            width: 15px;
+            height: 30px;
+            top: -15px;
+        }
+        
+        .opening-gear-3 .opening-gear-tooth {
+            width: 10px;
+            height: 20px;
+            top: -10px;
+        }
+        
+        .opening-text {
+            text-align: center;
+            z-index: 10;
+            margin-top: 30px;
+        }
+        
+        .opening-company-name {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #1a549c, #464655);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(26, 84, 156, 0.5);
+        }
+        
+        .opening-tagline {
+            font-size: 1.2rem;
+            color: #a0c1f1;
+            margin-bottom: 30px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        
+        .opening-loading-bar-container {
+            width: 400px;
+            height: 6px;
+            background-color: rgba(26, 84, 156, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 20px auto;
+            position: relative;
+        }
+        
+        .opening-loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #1a549c, #464655);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .opening-loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        .opening-loading-percentage {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a549c;
+            margin-top: 10px;
+        }
+        
+        .opening-loading-details {
+            color: #a0c1f1;
+            font-size: 1rem;
+            margin-top: 15px;
+            height: 20px;
+        }
+        
+        .opening-forex-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .opening-currency-pair {
+            position: absolute;
+            color: rgba(160, 193, 241, 0.3);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        /* Animations for opening */
+        @keyframes rotate-clockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes rotate-counterclockwise {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        /* Responsive Design for Opening */
+        @media (max-width: 768px) {
+            .opening-gear-container-3d {
+                width: 300px;
+                height: 200px;
+            }
+            
+            .opening-gear-1 {
+                width: 120px;
+                height: 120px;
+                left: 40px;
+            }
+            
+            .opening-gear-1 .opening-gear-inner {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .opening-gear-2 {
+                width: 80px;
+                height: 80px;
+                left: 140px;
+                top: 80px;
+            }
+            
+            .opening-gear-2 .opening-gear-inner {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .opening-gear-3 {
+                width: 60px;
+                height: 60px;
+                left: 210px;
+                top: 120px;
+            }
+            
+            .opening-gear-3 .opening-gear-inner {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .opening-company-name {
+                font-size: 2.5rem;
+            }
+            
+            .opening-loading-bar-container {
+                width: 300px;
+            }
+        }
+        
+        /* Existing William Capital Signals Styles */
         * { 
             box-sizing: border-box; 
             font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             transition: all 0.3s ease;
         }
+        
         body { 
             background: #0a0a15; 
             color: #e0e0e0; 
@@ -21,7 +348,15 @@
             background-image: 
                 radial-gradient(circle at 10% 20%, rgba(26, 84, 156, 0.05) 0%, transparent 20%),
                 radial-gradient(circle at 90% 80%, rgba(70, 70, 85, 0.05) 0%, transparent 20%);
+            opacity: 0;
+            animation: fadeInBody 1s forwards;
+            animation-delay: 1s;
         }
+        
+        @keyframes fadeInBody {
+            to { opacity: 1; }
+        }
+        
         /* Animated background elements */
         .bg-elements {
             position: fixed;
@@ -32,29 +367,28 @@
             pointer-events: none;
             z-index: -1;
         }
+        
         .bg-circle {
             position: absolute;
             border-radius: 50%;
             opacity: 0.1;
         }
+        
         .bg-circle.blue {
             background: #1a549c;
             animation: float 25s infinite ease-in-out;
         }
+        
         .bg-circle.grey {
             background: #464655;
             animation: float 30s infinite ease-in-out reverse;
         }
+        
         .bg-circle.gold {
             background: #2a2a4a;
             animation: float 35s infinite ease-in-out;
         }
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(5%, 10%); }
-            50% { transform: translate(10%, 5%); }
-            75% { transform: translate(5%, -10%); }
-        }
+        
         .container { 
             max-width: 500px; 
             margin: 40px auto; 
@@ -67,6 +401,7 @@
             overflow: hidden;
             z-index: 1;
         }
+        
         .container::before {
             content: '';
             position: absolute;
@@ -78,6 +413,7 @@
             z-index: -1;
             pointer-events: none;
         }
+        
         .container::after {
             content: '';
             position: absolute;
@@ -88,6 +424,7 @@
             background: linear-gradient(90deg, #1a549c, #464655, #2a2a4a);
             z-index: 1;
         }
+        
         h1 { 
             text-align: center; 
             color: #464655; 
@@ -98,6 +435,7 @@
             position: relative;
             letter-spacing: 1px;
         }
+        
         h1::after {
             content: '';
             position: absolute;
@@ -109,6 +447,7 @@
             background: linear-gradient(90deg, #1a549c, #464655);
             border-radius: 3px;
         }
+        
         .premium-badge {
             display: inline-block;
             background: linear-gradient(45deg, #464655, #2a2a4a);
@@ -125,10 +464,12 @@
             color: transparent;
             margin-left: 8px;
         }
+        
         .form-group { 
             margin-bottom: 28px; 
             position: relative;
         }
+        
         label { 
             display: block; 
             margin-bottom: 12px; 
@@ -137,6 +478,7 @@
             font-size: 15px;
             letter-spacing: 0.5px;
         }
+        
         input { 
             width: 100%; 
             padding: 16px; 
@@ -149,15 +491,18 @@
             letter-spacing: 1px;
             font-weight: 500;
         }
+        
         input:focus {
             outline: none;
             border-color: #1a549c;
             box-shadow: 0 0 0 4px rgba(26, 84, 156, 0.25);
         }
+        
         input::placeholder {
             color: #5a628a;
             font-weight: 500;
         }
+        
         button { 
             background: linear-gradient(45deg, #1a549c, #0d3764); 
             color: white; 
@@ -176,13 +521,16 @@
             font-weight: 600;
             z-index: 1;
         }
+        
         button:hover { 
             transform: translateY(-3px);
             box-shadow: 0 9px 25px rgba(26, 84, 156, 0.5);
         }
+        
         button:active {
             transform: translateY(0);
         }
+        
         button::after {
             content: '';
             position: absolute;
@@ -193,9 +541,11 @@
             background: linear-gradient(90deg, transparent, rgba(42, 42, 74, 0.2), transparent);
             transition: all 0.6s;
         }
+        
         button:hover::after {
             left: 100%;
         }
+        
         .glow-effect {
             position: absolute;
             width: 200px;
@@ -206,10 +556,12 @@
             pointer-events: none;
             animation: pulseGlow 4s infinite alternate;
         }
+        
         @keyframes pulseGlow {
             0% { opacity: 0.2; }
             100% { opacity: 0.4; }
         }
+        
         .error { 
             color: #ff4d4d; 
             text-align: center; 
@@ -221,6 +573,7 @@
             border-radius: 8px;
             background: rgba(255, 77, 77, 0.1);
         }
+        
         .success { 
             color: #4ecdc4; 
             text-align: center; 
@@ -230,9 +583,11 @@
             padding: 10px;
             border-radius: 8px;
         }
+        
         .hidden { 
             display: none; 
         }
+        
         .logo { 
             color: #464655; 
             font-size: 2.8rem; 
@@ -243,11 +598,13 @@
             position: relative;
             letter-spacing: 1px;
         }
+        
         .logo span {
             background: linear-gradient(45deg, #464655, #2a2a4a);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        
         .logo::after {
             content: '';
             position: absolute;
@@ -259,12 +616,14 @@
             background: linear-gradient(90deg, #1a549c, #464655, #2a2a4a);
             border-radius: 2px;
         }
+        
         .signals-grid { 
             display: grid; 
             grid-template-columns: 1fr; 
             gap: 22px; 
             margin-top: 25px; 
         }
+        
         .signal-card { 
             background: #12152a; 
             border-radius: 16px; 
@@ -278,11 +637,13 @@
             border: 1px solid rgba(26, 84, 156, 0.2);
             transition: all 0.3s;
         }
+        
         .signal-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
             border-color: rgba(26, 84, 156, 0.4);
         }
+        
         .signal-card::before {
             content: '';
             position: absolute;
@@ -292,18 +653,21 @@
             height: 100%;
             background: linear-gradient(to bottom, #1a549c, #464655);
         }
+        
         @keyframes fadeInUp {
             to {
                 transform: translateY(0);
                 opacity: 1;
             }
         }
+        
         .signal-header { 
             display: flex; 
             justify-content: space-between; 
             margin-bottom: 20px;
             position: relative;
         }
+        
         .pair { 
             font-size: 1.7rem; 
             font-weight: bold; 
@@ -311,6 +675,7 @@
             text-shadow: 0 0 10px rgba(70, 70, 85, 0.3);
             letter-spacing: 0.5px;
         }
+        
         .timeframe { 
             background: rgba(19, 22, 40, 0.7); 
             padding: 6px 14px; 
@@ -320,6 +685,7 @@
             color: #1a549c;
             font-weight: 600;
         }
+        
         .signal-type.buy { 
             color: #464655; 
             font-weight: 700;
@@ -327,6 +693,7 @@
             text-shadow: 0 0 12px rgba(70, 70, 85, 0.3);
             letter-spacing: 1px;
         }
+        
         .signal-type.sell { 
             color: #ff4d4d; 
             font-weight: 700;
@@ -334,6 +701,7 @@
             text-shadow: 0 0 12px rgba(255, 77, 77, 0.3);
             letter-spacing: 1px;
         }
+        
         .entry, .tp, .sl { 
             margin: 16px 0;
             padding: 12px 16px;
@@ -344,23 +712,28 @@
             justify-content: space-between;
             align-items: center;
         }
+        
         .entry { 
             border-left-color: #1a549c;
             box-shadow: 0 3px 10px rgba(26, 84, 156, 0.2);
         }
+        
         .tp { 
             border-left-color: #2a882a;
             box-shadow: 0 3px 10px rgba(42, 136, 42, 0.2);
         }
+        
         .sl { 
             border-left-color: #ff4d4d;
             box-shadow: 0 3px 10px rgba(255, 77, 77, 0.2);
         }
+        
         .value {
             font-weight: 700;
             color: white;
             font-size: 1.1rem;
         }
+        
         .btn-logout { 
             background: linear-gradient(45deg, #ff4d4d, #c43939); 
             color: white; 
@@ -373,10 +746,12 @@
             font-weight: 600;
             letter-spacing: 0.5px;
         }
+        
         .btn-logout:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 18px rgba(255, 77, 77, 0.4);
         }
+        
         .footer { 
             text-align: center; 
             margin-top: 35px; 
@@ -386,20 +761,24 @@
             border-top: 1px solid rgba(30, 35, 61, 0.5);
             font-weight: 500;
         }
+        
         .contact-info {
             text-align: center;
             margin: 15px 0;
             font-size: 0.95rem;
             color: #a3a3c2;
         }
+        
         .contact-info a {
             color: #1a549c;
             text-decoration: none;
             font-weight: 600;
         }
+        
         .contact-info a:hover {
             text-decoration: underline;
         }
+        
         .expiration-warning { 
             background: linear-gradient(45deg, #ff4d4d, #c43939); 
             color: white; 
@@ -413,6 +792,7 @@
             overflow: hidden;
             border: 1px solid rgba(255, 77, 77, 0.3);
         }
+        
         .expiration-warning::before {
             content: '';
             position: absolute;
@@ -422,6 +802,7 @@
             height: 3px;
             background: linear-gradient(90deg, #464655, #ff4d4d);
         }
+        
         .expiration-countdown {
             font-weight: bold;
             font-size: 1.3rem;
@@ -429,6 +810,7 @@
             text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
             letter-spacing: 1px;
         }
+        
         .countdown-value {
             display: inline-block;
             min-width: 35px;
@@ -438,6 +820,7 @@
             margin: 0 3px;
             font-weight: 700;
         }
+        
         .loading { 
             text-align: center; 
             padding: 30px; 
@@ -446,6 +829,7 @@
             font-weight: 600;
             letter-spacing: 0.5px;
         }
+        
         .loading::after {
             content: '';
             display: inline-block;
@@ -457,9 +841,11 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+        
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
         .refresh-btn {
             background: linear-gradient(45deg, #1a549c, #0d3764);
             color: white;
@@ -475,10 +861,12 @@
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
+        
         .refresh-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(26, 84, 156, 0.5);
         }
+        
         /* Pricing section */
         .pricing-section {
             background: #111428;
@@ -488,6 +876,7 @@
             border: 1px solid rgba(26, 84, 156, 0.2);
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
         }
+        
         .pricing-title {
             text-align: center;
             color: #464655;
@@ -496,11 +885,13 @@
             font-weight: 700;
             letter-spacing: 0.5px;
         }
+        
         .pricing-options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 18px;
         }
+        
         .price-card {
             background: #151932;
             border-radius: 12px;
@@ -512,12 +903,14 @@
             overflow: hidden;
             z-index: 1;
         }
+        
         .price-card.popular {
             border-color: #464655;
             transform: scale(1.05);
             z-index: 2;
             box-shadow: 0 0 0 3px rgba(70, 70, 85, 0.2);
         }
+        
         .price-card.popular::after {
             content: '';
             position: absolute;
@@ -527,11 +920,13 @@
             height: 3px;
             background: #464655;
         }
+        
         .price-card:hover {
             transform: translateY(-5px);
             border-color: #1a549c;
             box-shadow: 0 8px 25px rgba(26, 84, 156, 0.3);
         }
+        
         .duration {
             font-size: 1.2rem;
             font-weight: 700;
@@ -539,6 +934,7 @@
             margin: 10px 0 8px;
             letter-spacing: 0.5px;
         }
+        
         .price {
             font-size: 1.8rem;
             font-weight: 800;
@@ -548,6 +944,7 @@
             margin: 10px 0;
             text-shadow: 0 0 10px rgba(70, 70, 85, 0.2);
         }
+        
         .original-price {
             text-decoration: line-through;
             color: #7a82a6;
@@ -555,6 +952,7 @@
             display: block;
             margin-top: 6px;
         }
+        
         .promotion-tag {
             position: absolute;
             top: 10px;
@@ -567,6 +965,7 @@
             border-radius: 20px;
             box-shadow: 0 3px 8px rgba(255, 0, 0, 0.3);
         }
+        
         .whatsapp-btn {
             background: linear-gradient(45deg, #1a549c, #0d3764);
             color: white;
@@ -587,19 +986,17 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+        
         .whatsapp-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(26, 84, 156, 0.5);
         }
+        
         .whatsapp-icon {
             font-size: 1.3rem;
             animation: pulse 1.5s infinite;
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
+        
         /* Real-time market data display */
         .market-data {
             display: flex;
@@ -612,16 +1009,19 @@
             border: 1px solid rgba(26, 84, 156, 0.2);
             box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
         }
+        
         .market-pair {
             display: flex;
             flex-direction: column;
         }
+        
         .market-pair-name {
             font-weight: 600;
             color: #1a549c;
             font-size: 1.05rem;
             letter-spacing: 0.5px;
         }
+        
         .market-price {
             font-size: 1.35rem;
             font-weight: bold;
@@ -629,6 +1029,7 @@
             margin-top: 4px;
             letter-spacing: 0.5px;
         }
+        
         .market-change {
             padding: 3px 8px;
             border-radius: 5px;
@@ -636,14 +1037,17 @@
             margin-top: 5px;
             font-weight: 600;
         }
+        
         .market-change.positive {
             background: rgba(42, 136, 42, 0.2);
             color: #2a882a;
         }
+        
         .market-change.negative {
             background: rgba(255, 77, 77, 0.2);
             color: #ff4d4d;
         }
+        
         /* License expired section */
         .license-expired {
             background: #13162a;
@@ -653,22 +1057,26 @@
             border: 1px solid rgba(255, 77, 77, 0.3);
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
         }
+        
         .license-expired h3 {
             color: #ff4d4d;
             margin-bottom: 18px;
             font-size: 1.5rem;
             font-weight: 700;
         }
+        
         .btn-container {
             display: flex;
             gap: 12px;
             margin-top: 20px;
         }
+        
         .btn-secondary {
             background: linear-gradient(45deg, #1e233d, #151932);
             color: #1a549c;
             border: 1px solid #1a549c;
         }
+        
         /* Notification badge for new signals */
         .new-signal-badge {
             position: absolute;
@@ -687,6 +1095,7 @@
             animation: pulseBadge 1.8s infinite;
             box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
         }
+        
         @keyframes pulseBadge {
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.25); opacity: 0.8; }
@@ -695,6 +1104,52 @@
     </style>
 </head>
 <body>
+    <!-- 3D Opening Animation Screen -->
+    <div class="opening-screen" id="openingScreen">
+        <div class="opening-container">
+            <!-- Animated Background -->
+            <div class="opening-bg-grid"></div>
+            <div class="opening-pulse-dots" id="openingPulseDots"></div>
+            
+            <!-- Forex Elements Floating -->
+            <div class="opening-forex-elements" id="openingForexElements"></div>
+            
+            <!-- 3D Gear System -->
+            <div class="opening-gear-container-3d">
+                <div class="opening-gear-scene">
+                    <!-- Main Gear 1 -->
+                    <div class="opening-gear opening-gear-1" id="openingGear1">
+                        <div class="opening-gear-inner"></div>
+                    </div>
+                    
+                    <!-- Main Gear 2 -->
+                    <div class="opening-gear opening-gear-2" id="openingGear2">
+                        <div class="opening-gear-inner"></div>
+                    </div>
+                    
+                    <!-- Main Gear 3 -->
+                    <div class="opening-gear opening-gear-3" id="openingGear3">
+                        <div class="opening-gear-inner"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Loading Text and Progress -->
+            <div class="opening-text">
+                <h1 class="opening-company-name">WILLIAM CAPITAL SIGNALS</h1>
+                <p class="opening-tagline">Premium Forex Trading Signals</p>
+                
+                <div class="opening-loading-bar-container">
+                    <div class="opening-loading-bar" id="openingLoadingBar"></div>
+                </div>
+                
+                <div class="opening-loading-percentage" id="openingLoadingPercentage">0%</div>
+                <div class="opening-loading-details" id="openingLoadingDetails">Initializing trading platform...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Website Content -->
     <!-- Background elements -->
     <div class="bg-elements">
         <div class="bg-circle blue" style="width: 300px; height: 300px; top: 10%; left: 5%;"></div>
@@ -702,8 +1157,9 @@
         <div class="bg-circle gold" style="width: 250px; height: 250px; bottom: 15%; left: 10%;"></div>
         <div class="bg-circle blue" style="width: 150px; height: 150px; top: 30%; right: 15%;"></div>
     </div>
+    
     <!-- License Entry Page -->
-    <div id="licensePage" class="container">
+    <div id="licensePage" class="container hidden">
         <div class="glow-effect" style="top: -50px; right: -50px;"></div>
         <div class="glow-effect" style="bottom: -70px; left: -50px;"></div>
         <h1>William Capital <span class="premium-badge">Signals</span></h1>
@@ -743,6 +1199,7 @@
         <button id="accessButton" onclick="validateLicense()">Access Premium Signals</button>
         <div id="message" class="error" style="display: none;"></div>
     </div>
+    
     <!-- Signals Page (hidden by default) -->
     <div id="signalsPage" class="hidden">
         <div class="container">
@@ -787,6 +1244,7 @@
             </div>
         </div>
     </div>
+    
     <!-- License Expired Page -->
     <div id="expiredPage" class="hidden">
         <div class="container">
@@ -835,10 +1293,185 @@
             </div>
         </div>
     </div>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
     <script>
+        // Initialize opening animation variables
+        let openingProgress = 0;
+        const openingScreen = document.getElementById('openingScreen');
+        const openingLoadingBar = document.getElementById('openingLoadingBar');
+        const openingLoadingPercentage = document.getElementById('openingLoadingPercentage');
+        const openingLoadingDetails = document.getElementById('openingLoadingDetails');
+        const openingPulseDots = document.getElementById('openingPulseDots');
+        const openingForexElements = document.getElementById('openingForexElements');
+        
+        // Create opening gear teeth
+        function createOpeningGearTeeth(gear, toothCount, toothWidth, toothHeight) {
+            const angleStep = 360 / toothCount;
+            
+            for (let i = 0; i < toothCount; i++) {
+                const tooth = document.createElement('div');
+                tooth.className = 'opening-gear-tooth';
+                
+                // Calculate position
+                const angle = i * angleStep;
+                const rad = (angle * Math.PI) / 180;
+                
+                // Position tooth on the gear's circumference
+                const gearRadius = gear.offsetWidth / 2;
+                tooth.style.width = `${toothWidth}px`;
+                tooth.style.height = `${toothHeight}px`;
+                tooth.style.transform = `rotate(${angle}deg) translateY(-${gearRadius}px)`;
+                
+                gear.appendChild(tooth);
+            }
+        }
+        
+        // Create floating currency pairs for opening
+        function createOpeningForexElements() {
+            const currencyPairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'NZD/USD', 'USD/CHF'];
+            
+            for (let i = 0; i < 15; i++) {
+                const pair = document.createElement('div');
+                pair.className = 'opening-currency-pair';
+                pair.textContent = currencyPairs[Math.floor(Math.random() * currencyPairs.length)];
+                
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                pair.style.left = `${left}%`;
+                pair.style.top = `${top}%`;
+                
+                // Random animation
+                const duration = 15 + Math.random() * 20;
+                const delay = Math.random() * 5;
+                pair.style.animation = `float ${duration}s infinite ${delay}s, pulse ${duration/2}s infinite ${delay}s`;
+                
+                openingForexElements.appendChild(pair);
+            }
+        }
+        
+        // Create animated background dots for opening
+        function createOpeningPulseDots() {
+            for (let i = 0; i < 25; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'opening-pulse-dot';
+                
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                dot.style.left = `${left}%`;
+                dot.style.top = `${top}%`;
+                
+                // Random animation
+                const duration = 3 + Math.random() * 4;
+                const delay = Math.random() * 2;
+                dot.style.animation = `pulse ${duration}s infinite ${delay}s`;
+                
+                // Random size
+                const size = 3 + Math.random() * 5;
+                dot.style.width = `${size}px`;
+                dot.style.height = `${size}px`;
+                
+                openingPulseDots.appendChild(dot);
+            }
+        }
+        
+        // Simulate opening loading progress
+        function simulateOpeningLoading() {
+            const openingMessages = [
+                "Initializing William Capital Signals...",
+                "Loading premium signal algorithms...",
+                "Setting up real-time market data...",
+                "Connecting to global forex markets...",
+                "Preparing signal analysis tools...",
+                "Finalizing platform security...",
+                "Ready to access premium signals!"
+            ];
+            
+            const interval = setInterval(() => {
+                // Increment progress
+                openingProgress += Math.random() * 12;
+                
+                if (openingProgress > 100) {
+                    openingProgress = 100;
+                    clearInterval(interval);
+                    
+                    // Show completion message
+                    openingLoadingDetails.textContent = "Opening William Capital Signals...";
+                    
+                    // Transition to website after delay
+                    setTimeout(() => {
+                        openingScreen.classList.add('hidden');
+                        
+                        // Show license page
+                        setTimeout(() => {
+                            // Initialize website and check for existing session
+                            initApp();
+                        }, 500);
+                    }, 1000);
+                }
+                
+                // Update UI
+                openingLoadingBar.style.width = `${openingProgress}%`;
+                openingLoadingPercentage.textContent = `${Math.floor(openingProgress)}%`;
+                
+                // Update loading message based on progress
+                if (openingProgress < 20) {
+                    openingLoadingDetails.textContent = openingMessages[0];
+                } else if (openingProgress < 35) {
+                    openingLoadingDetails.textContent = openingMessages[1];
+                } else if (openingProgress < 50) {
+                    openingLoadingDetails.textContent = openingMessages[2];
+                } else if (openingProgress < 65) {
+                    openingLoadingDetails.textContent = openingMessages[3];
+                } else if (openingProgress < 80) {
+                    openingLoadingDetails.textContent = openingMessages[4];
+                } else if (openingProgress < 95) {
+                    openingLoadingDetails.textContent = openingMessages[5];
+                } else {
+                    openingLoadingDetails.textContent = openingMessages[6];
+                }
+                
+                // Add a slight 3D effect to gears based on progress
+                const gearScene = document.querySelector('.opening-gear-scene');
+                const rotateX = 15 + (openingProgress / 100) * 5;
+                const rotateY = 10 + (openingProgress / 100) * 10;
+                gearScene.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                
+            }, 300);
+        }
+        
+        // Initialize the opening animation
+        function initOpeningAnimation() {
+            // Create gear teeth
+            const gear1 = document.getElementById('openingGear1');
+            const gear2 = document.getElementById('openingGear2');
+            const gear3 = document.getElementById('openingGear3');
+            
+            createOpeningGearTeeth(gear1, 16, 20, 40);
+            createOpeningGearTeeth(gear2, 12, 15, 30);
+            createOpeningGearTeeth(gear3, 10, 10, 20);
+            
+            // Create background elements
+            createOpeningPulseDots();
+            createOpeningForexElements();
+            
+            // Start opening loading simulation
+            setTimeout(simulateOpeningLoading, 500);
+            
+            // Add a subtle interactive effect on mouse move
+            document.addEventListener('mousemove', (e) => {
+                const x = (e.clientX / window.innerWidth) * 10 - 5;
+                const y = (e.clientY / window.innerHeight) * 10 - 5;
+                const gearScene = document.querySelector('.opening-gear-scene');
+                gearScene.style.transform = `rotateX(${15 + y}deg) rotateY(${10 + x}deg)`;
+            });
+        }
+        
         // Your Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyA6A67d0YBJlhcT9GUGRVHMzGue1BM2rsA",
@@ -849,9 +1482,11 @@
             appId: "1:655334374318:web:d107dbf37ab1e31e1c663f",
             measurementId: "G-P7RWPEPQ4V"
         };
+        
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        
         // Format license key as user types (XXXX-XXXX-XXXX-XXXX)
         function formatLicenseKey(input) {
             let value = input.value.replace(/[^A-Z0-9]/gi, '').toUpperCase();
@@ -868,23 +1503,14 @@
             }
             input.value = formatted;
         }
-        // Check if user has a valid session when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add glow effects to price cards
-            const priceCards = document.querySelectorAll('.price-card');
-            priceCards.forEach(card => {
-                const glow = document.createElement('div');
-                glow.className = 'glow-effect';
-                glow.style.width = '120px';
-                glow.style.height = '120px';
-                glow.style.top = '-30px';
-                glow.style.right = '-30px';
-                card.appendChild(glow);
-            });
+        
+        // Check if user has a valid session
+        function checkSessionAndShowPage() {
             // Check if user has a valid session
             if (sessionStorage.getItem('forex_license')) {
                 const licenseKey = sessionStorage.getItem('forex_license');
                 const expiresAt = sessionStorage.getItem('license_expires');
+                
                 // Verify license is still valid
                 if (expiresAt) {
                     const now = new Date().getTime();
@@ -900,7 +1526,29 @@
                     showSignalsPage();
                     loadSignals();
                 }
+            } else {
+                // Show license page if no valid session
+                document.getElementById('licensePage').classList.remove('hidden');
             }
+        }
+        
+        // Initialize the app after opening animation
+        function initApp() {
+            // Add glow effects to price cards
+            const priceCards = document.querySelectorAll('.price-card');
+            priceCards.forEach(card => {
+                const glow = document.createElement('div');
+                glow.className = 'glow-effect';
+                glow.style.width = '120px';
+                glow.style.height = '120px';
+                glow.style.top = '-30px';
+                glow.style.right = '-30px';
+                card.appendChild(glow);
+            });
+            
+            // Check session and show appropriate page
+            checkSessionAndShowPage();
+            
             // Make sure button is clickable by adding touch feedback
             const accessButton = document.getElementById('accessButton');
             if (accessButton) {
@@ -913,26 +1561,32 @@
                     this.style.boxShadow = '0 6px 20px rgba(26, 84, 156, 0.4)';
                 });
             }
-        });
+        }
+        
         function validateLicense() {
             const keyInput = document.getElementById('licenseKey').value.trim();
             const messageDiv = document.getElementById('message');
+            
             // Clear previous messages
             messageDiv.style.display = 'none';
+            
             if (!keyInput) {
                 showMessage('Please enter a license key', 'error');
                 return;
             }
+            
             // Format key to match storage format (XXXX-XXXX-XXXX-XXXX)
             const formattedKey = keyInput.replace(/[^A-Z0-9]/gi, '')
                 .replace(/(.{4})/g, '$1-')
                 .slice(0, 19)
                 .toUpperCase();
+            
             // Show loading state on button
             const accessButton = document.getElementById('accessButton');
             const originalText = accessButton.innerHTML;
             accessButton.innerHTML = '<div class="loading" style="color: white; margin: 0; padding: 0;">Validating...</div>';
             accessButton.disabled = true;
+            
             // Direct Firestore check
             db.collection('licenseKeys')
                 .where('key', '==', formattedKey)
@@ -940,27 +1594,33 @@
                 .then((querySnapshot) => {
                     accessButton.innerHTML = originalText;
                     accessButton.disabled = false;
+                    
                     if (!querySnapshot.empty) {
                         const keyData = querySnapshot.docs[0].data();
                         const expiresAt = keyData.expiresAt ? keyData.expiresAt.toDate() : null;
                         const now = new Date();
+                        
                         if (keyData.status !== 'active') {
                             showMessage('License is not active', 'error');
                             showExpiredPage();
                             return;
                         }
+                        
                         if (expiresAt && expiresAt < now) {
                             showMessage('License key has expired. Please renew your subscription.', 'error');
                             showExpiredPage();
                             return;
                         }
+                        
                         // Save valid key to session storage
                         sessionStorage.setItem('forex_license', formattedKey);
                         const expiresAtTime = expiresAt ? expiresAt.getTime() : null;
                         sessionStorage.setItem('license_expires', expiresAtTime);
+                        
                         // Show signals page
                         showSignalsPage();
                         loadSignals();
+                        
                         // Start countdown timer
                         if (expiresAtTime) {
                             startCountdown(expiresAtTime);
@@ -976,16 +1636,20 @@
                     showMessage('Connection error. Please try again.', 'error');
                 });
         }
+        
         function startCountdown(expiresAt) {
             const countdownElement = document.getElementById('expirationWarning');
             const daysElement = document.getElementById('days');
             const hoursElement = document.getElementById('hours');
             const minutesElement = document.getElementById('minutes');
             const secondsElement = document.getElementById('seconds');
+            
             countdownElement.style.display = 'block';
+            
             const countdownTimer = setInterval(() => {
                 const now = new Date().getTime();
                 const distance = expiresAt - now;
+                
                 // Check if expired
                 if (distance < 0) {
                     clearInterval(countdownTimer);
@@ -993,11 +1657,13 @@
                     showExpiredPage();
                     return;
                 }
+                
                 // Calculate time components
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
                 // Update countdown display
                 daysElement.textContent = days.toString().padStart(2, '0');
                 hoursElement.textContent = hours.toString().padStart(2, '0');
@@ -1005,11 +1671,13 @@
                 secondsElement.textContent = seconds.toString().padStart(2, '0');
             }, 1000);
         }
+        
         function contactWhatsApp() {
             const message = "Hello, I'm interested in purchasing a William Capital Signals license key.";
             const whatsappUrl = `https://wa.me/263718517301?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
         }
+        
         function showSignalsPage() {
             // Hide other pages
             document.getElementById('licensePage').classList.add('hidden');
@@ -1017,6 +1685,7 @@
             // Show signals page
             document.getElementById('signalsPage').classList.remove('hidden');
         }
+        
         function showExpiredPage() {
             // Hide other pages
             document.getElementById('licensePage').classList.add('hidden');
@@ -1024,14 +1693,17 @@
             // Show expired page
             document.getElementById('expiredPage').classList.remove('hidden');
         }
+        
         function loadSignals() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('signalsContainer').innerHTML = '';
+            
             // Get signals from Firestore
             db.collection('signals')
                 .get()
                 .then((querySnapshot) => {
                     document.getElementById('loading').style.display = 'none';
+                    
                     // Filter active signals client-side
                     const activeSignals = [];
                     querySnapshot.forEach(doc => {
@@ -1040,20 +1712,25 @@
                             activeSignals.push({id: doc.id, ...signal});
                         }
                     });
+                    
                     // Sort by createdAt (newest first)
                     activeSignals.sort((a, b) => {
                         return b.createdAt.seconds - a.createdAt.seconds;
                     });
+                    
                     if (activeSignals.length === 0) {
                         document.getElementById('signalsContainer').innerHTML = 
                             '<div class="signal-card" style="text-align: center; padding: 30px;">No active signals available at the moment</div>';
                         return;
                     }
+                    
                     const container = document.getElementById('signalsContainer');
                     container.innerHTML = '';
+                    
                     activeSignals.forEach(signal => {
                         const card = document.createElement('div');
                         card.className = 'signal-card';
+                        
                         // Add glow effect
                         const glow = document.createElement('div');
                         glow.className = 'glow-effect';
@@ -1061,6 +1738,7 @@
                         glow.style.height = '180px';
                         glow.style.top = '-40px';
                         glow.style.right = '-30px';
+                        
                         // Add new signal badge if it's recent (less than 24 hours)
                         let newSignalBadge = '';
                         const signalTime = signal.createdAt ? signal.createdAt.toDate() : new Date();
@@ -1068,6 +1746,7 @@
                         if (hoursSinceCreated < 24) {
                             newSignalBadge = '<div class="new-signal-badge">NEW</div>';
                         }
+                        
                         // Create signal card HTML
                         card.innerHTML = `
                             ${newSignalBadge}
@@ -1081,6 +1760,7 @@
                             <div class="sl"><span>SL:</span> <span class="value">${signal.sl}</span></div>
                             ${signal.note ? `<div class="note" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.1);"><strong>Note:</strong> ${signal.note}</div>` : ''}
                         `;
+                        
                         card.appendChild(glow);
                         container.appendChild(card);
                     });
@@ -1092,14 +1772,17 @@
                     console.error("Error loading signals:", error);
                 });
         }
+        
         function logout() {
             sessionStorage.removeItem('forex_license');
             sessionStorage.removeItem('license_expires');
             document.getElementById('signalsPage').classList.add('hidden');
+            document.getElementById('expiredPage').classList.add('hidden');
             document.getElementById('licensePage').classList.remove('hidden');
             // Clear license key field
             document.getElementById('licenseKey').value = '';
         }
+        
         function showMessage(text, type) {
             const messageDiv = document.getElementById('message');
             messageDiv.textContent = text;
@@ -1110,6 +1793,9 @@
                 messageDiv.style.display = 'none';
             }, 5000);
         }
+        
+        // Start the opening animation when page loads
+        window.addEventListener('DOMContentLoaded', initOpeningAnimation);
     </script>
 </body>
 </html>
